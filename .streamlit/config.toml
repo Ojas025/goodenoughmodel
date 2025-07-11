@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#3b82f6"            # blue-500 (strong but not overpowering)
+backgroundColor = "#121212"         # near black
+secondaryBackgroundColor = "#262626" # charcoal gray for cards
+textColor = "#d4d4d4"               # off-white for easy reading
+font = "sans serif"

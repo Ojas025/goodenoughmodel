@@ -8,35 +8,31 @@ def dataset_page():
     dataset = st.selectbox(
         "Select a dataset",
         dataset_list,
-        index=None
+        index=None,
+        placeholder = st.session_state.get("name")
     )
 
     st.markdown("<h4 style='text-align: center;'>OR</h4>",unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader('Upload Custom Dataset')
+    
 
     if uploaded_file is not None:
-        df = read_data_from_uploaded_file(uploaded_file)
-        name = uploaded_file.name
-
-        if "df" not in st.session_state or st.session_state.df is None:
-            st.session_state.df = df
-             
-        if "name" not in st.session_state or st.session_state.name is None:
-            st.session_state.name = name 
+        if st.session_state.get("name") != uploaded_file.name:
+            st.session_state.df = read_data_from_uploaded_file(uploaded_file)
+            st.session_state.name = uploaded_file.name 
+            st.session_state.target = None  
+            st.rerun()          
         
     elif dataset:
-        df = read_data_from_file_name(dataset)
-        name = dataset
+        if st.session_state.get("name") != dataset: 
+            st.session_state.df = read_data_from_file_name(dataset)
+            st.session_state.name = dataset 
+            st.session_state.target = None            
+            st.rerun()  
 
-        if "df" not in st.session_state or st.session_state.df is None:
-            st.session_state.df = df
-             
-        if "name" not in st.session_state or st.session_state.name is None:
-            st.session_state.name = name 
-    else:
-        df = None
-        name = None         
+    df = st.session_state.get("df")        
+    name = st.session_state.get("name")        
 
     if df is not None:
         
@@ -45,11 +41,8 @@ def dataset_page():
         st.header(processed_name)
         st.dataframe(df.head())
         
-        target = st.selectbox(
+        st.selectbox(
             "Select Target Feature",
             options=df.columns,
             key='target'
         )
-    
-        if 'target' not in st.session_state or st.session_state.target is None:
-            st.session_state.target = target
